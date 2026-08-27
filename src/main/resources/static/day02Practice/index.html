@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <title>Page Title</title>
+    <link rel='stylesheet' href='main.css'>
+</head>
+<body>
+
+    <!-- 스프링서버 실행 후: http://127.0.0.1:8080/day02Practice/index.html -->
+    <h3> 대기명단 </h3>
+    <div> <!-- 레이아웃(구역)-->
+        연락처: <input type="text" class="phone" /> <br/> 
+        인원수: <input type="text" class="count" /> <br/>
+        <button onclick="waitingSave()"> 등록 </button> 
+    </div>
+    <div>
+        <table border="1"> <!-- 테이블 -->
+            <thead> <!-- 제목구역 -->
+                <tr> <!-- 행 -->
+                    <th> 번호 </th> <th> 연락처 </th> <th> 인원수 </th> <th> 비고 </th>
+                </tr>
+            </thead>
+            <tbody class="waitingList"> <!-- 본문구역-->
+                <tr>
+                    <td> 1 </td> <td> 010-1212-1212 </td> <td> 4 </td> 
+                    <td> <button>수정</button> <button>삭제</button> </td> <!-- 데이터셀(한칸)-->
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>

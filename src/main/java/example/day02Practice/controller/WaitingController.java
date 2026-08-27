@@ -1,19 +1,16 @@
 package example.day02Practice.controller;
 
-
 import java.util.ArrayList;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam; // import 추가
 import org.springframework.web.bind.annotation.RestController;
-
-
 
 import example.day02Practice.model.dao.WaitingDao;
 import example.day02Practice.model.dto.WaitingDto;
-
 /*
     컨트롤러에 서블릿( HTTP 프로토콜 사용 가능하게 기능/방법( GET / POST / PUT / DELETE ) 제공하는 클래스 ) 기능 
     * 레거시(과거) 코드는 상속받아 서블릿 구현
@@ -37,7 +34,7 @@ public class WaitingController {
     public boolean save( WaitingDto waitingDto ){
         boolean result = wd.save(waitingDto);
         return result;
-    } // save end
+    }
 
     // [2] 전체조회
     @GetMapping( "/waiting/findall" )
@@ -54,7 +51,7 @@ public class WaitingController {
 
     // [4] 개별삭제
     @DeleteMapping( "/waiting/delete" )
-    public boolean delete( String phone ){
-        return wd.delete(phone);
+    public boolean delete( @RequestParam("no") int no ){
+        return wd.delete(no);
     }
-}// class end 
+}

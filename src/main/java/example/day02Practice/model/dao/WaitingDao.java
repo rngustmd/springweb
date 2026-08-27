@@ -49,13 +49,13 @@ public class WaitingDao extends BaseDao {
     } // findAll end
 
     
-    // [3] 개별수정 (전화번호 기준 인원수 수정)
+        // [3] 개별수정 (번호 no 기준 인원수 count 수정)
         public boolean update( WaitingDto waitingDto ){
             try {
-                String sql = "update waiting set count = ? where phone = ?";
+                String sql = "update waiting set count = ? where no = ?";
                 PreparedStatement ps = conn.prepareStatement(sql);
                 ps.setInt(1, waitingDto.getCount());
-                ps.setString(2, waitingDto.getPhone());
+                ps.setInt(2, waitingDto.getNo()); // no 기준으로 변경
                 int result = ps.executeUpdate();
                 if( result >= 1 ) return true;
             } catch( SQLException e ){ 
@@ -64,19 +64,18 @@ public class WaitingDao extends BaseDao {
             return false;
         } // update end
 
-    // [4] 개별삭제
-    public boolean delete( String phone ){
-        try {
-            String sql = "delete from waiting where phone = ?";
-            PreparedStatement ps = conn.prepareStatement( sql );
-            ps.setString( 1 , phone );
-            int result = ps.executeUpdate();
-            if( result >= 1 ){ return true; }
-        } catch( SQLException e ){
-            System.out.println( e );
-        }
-        return false;
-    } // delete end
-    
+        // [4] 개별삭제
+        public boolean delete( int no ){
+            try {
+                String sql = "delete from waiting where no = ?";
+                PreparedStatement ps = conn.prepareStatement( sql );
+                ps.setInt( 1 , no );
+                int result = ps.executeUpdate();
+                if( result >= 1 ){ return true; }
+            } catch( SQLException e ){
+                System.out.println(e);
+            }
+            return false;
+    }
 }
 
