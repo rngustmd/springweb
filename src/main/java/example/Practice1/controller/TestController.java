@@ -64,6 +64,7 @@ public class TestController {
 } // class end
 
 @Data // getter setter toString 등등
+
 @AllArgsConstructor @NoArgsConstructor @Builder
 class TestDto{
     private int no;

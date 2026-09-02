@@ -1,0 +1,10 @@
+DROP DATABASE IF EXISTS mydb0902;
+CREATE DATABASE mydb0902;
+USE mydb0902;
+CREATE TABLE exam(
+    eno INT AUTO_INCREMENT PRIMARY KEY ,
+    ename VARCHAR(225)
+);
+INSERT INTO exam( ename )VALUES( '유재석' );
+INSERT INTO exam( ename )VALUES( '강호동' );
+INSERT INTO exam( ename )VALUES( '신동엽' );
