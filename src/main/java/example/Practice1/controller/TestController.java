@@ -29,10 +29,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RequestMapping("/test") // 해당 클래스 내 메소드들의 공통 URL 정의
 public class TestController {
     @PostMapping("/")
-    public boolean testWrite( @RequestBody TestDto testDto ){
-        System.out.println("TestController.testPrint()" );
-        return true;
-    }
+    
     // [2] 게시물 전체조회
     @GetMapping("")
     public ArrayList<TestDto> testPrint(){
