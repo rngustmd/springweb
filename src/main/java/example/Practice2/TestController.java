@@ -19,10 +19,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 
 
-@RestController
+@RestController // 해당 클래스가 HTTP 컨트롤러 객체(빈) 등록, @Controller( +@Component ) + @ResponseBody
 @RequiredArgsConstructor
 
 public class TestController {
+    // DI : IOC(제어역전) 기반으로 스프링에 객체(빈)가 등록된 객체(빈) 주입
     private final TestService testService;
 
     // [1] 게시물 등록 testWrite()

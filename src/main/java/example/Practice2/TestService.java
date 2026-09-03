@@ -25,9 +25,13 @@ public class TestService {
     }
     // [3] 게시물 개별조회 testDetail()
     public TestEntity testDetail(int no) {
+        // 1. 리포지토리 이용한 select 처리하기 , .findById( pk 번호 )
+        // Optional 클래스란? 객체사용시 null 예외 가 발생하는 경우 안전하게 메소드 제공
         Optional<TestEntity> optional = testRepository.findById(no);
+        // 2. 포장(Optional) 내 엔티티 들어있어? 조회결과 엔티티 확인
         if( optional.isPresent() ){
-            return optional.get();
+            return optional.get(); 
+            // 3. 포장 (Optional) 열기 , 엔티티 꺼내기
         }
         return null;
     }
