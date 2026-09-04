@@ -45,7 +45,6 @@ public class TestController {
         return testService.testDetail(no);
     }
     
-    
     // [4] 게시물 삭제 testDelete()
     @DeleteMapping("/test")
     public boolean testDelete( @RequestParam( name = "no" ) int no ){

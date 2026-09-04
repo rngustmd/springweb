@@ -37,10 +37,22 @@ public class TestService {
     }
 
     // [4] 게시물 삭제 testDelete()
+    
+    // public boolean testDelete( int no ){
+    //     testRepository.deleteById( no );
+    //     return true;
+    // }
+
     public boolean testDelete( int no ){
-        testRepository.deleteById( no );
-        return true;
+        Optional<TestEntity> optional =
+        testRepository.findById( no );
+        if( optional.isPresent() ){
+            testRepository.delete( optional.get() );
+            return true;
+        }
+        return false;
     }
+
     // [5] 게시물 수정 testUpdate()
     @Transactional
     public boolean testUpdate( TestEntity entity ){
