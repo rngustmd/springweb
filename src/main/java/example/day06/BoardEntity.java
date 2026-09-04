@@ -3,6 +3,7 @@ package example.day06;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -28,7 +29,7 @@ public class BoardEntity {
     private CategoryEntity categoryEntity;
 
     // 양방향 참조
-    @OneToMany(mappedBy = "boardEntity")
+    @OneToMany(mappedBy = "boardEntity" ,cascade = CascadeType.REMOVE)
     @ToString.Exclude // 자바의 순환참조 방지
     @Builder.Default // 빌더 사용시 초기값 사용
     private List<ReplyEntity> replyList = new ArrayList<>();
