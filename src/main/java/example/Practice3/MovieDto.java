@@ -20,7 +20,8 @@ public class MovieDto {
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
 
-    public MovieEntity toEntity( ){
+    // 1. DTO -> ENTITY : 주로 등록시
+    public MovieEntity toEntity( ){ // static 제외한 이유? 해당 메소드 호출하는 대상이 dto인스턴스라서
         return MovieEntity.builder()
                 .movieid(this.movieid)        
                 .title(this.title)
@@ -28,9 +29,12 @@ public class MovieDto {
                 .releasedate(this.releasedate)
                 .rating(this.rating)
                 .build();
+
     }
 
-    public static MovieDto from( MovieEntity movieEntity ){
+    // 2. ENTITY -> DTO : 주로 조회시
+    public static MovieDto from( MovieEntity movieEntity ){ // statci 포함한 이유? 해당 메소드 호출하는 대상의 dto 인스턴스가 없는
+        
         return MovieDto.builder()
                 .movieid( movieEntity.getMovieid() )
                 .title( movieEntity.getTitle() )
