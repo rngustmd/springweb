@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 public class Exam1 {
     public static void main(String[] args) {
@@ -47,7 +48,7 @@ public class Exam1 {
     }
 
 }
-
+@Component 
 class TestService{
 
     // private TestService(){}
@@ -71,7 +72,7 @@ class TestService{
         list.add( new Student("강호동") );
         list.add( new Student("신동엽") );
     }
-    Student 개별호출( ){ return list.get(1) }
+    Student 개별호출( ){ return list.get(1); }
 
 }
 

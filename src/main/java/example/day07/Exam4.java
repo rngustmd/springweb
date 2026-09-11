@@ -53,6 +53,8 @@ public class Exam4 {
         // 메소드참조(레퍼런스)
         List<Student> list3 = names.stream( ).map( Student::new ).toList( );
 
+
+        
         /*
         
             유형
