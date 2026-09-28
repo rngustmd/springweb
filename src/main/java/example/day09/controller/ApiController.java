@@ -1,0 +1,42 @@
+package example.day09.controller;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import example.day09.model.dto.ApiDto;
+import example.day09.service.ApiService;
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
+
+@RestController 
+@RequiredArgsConstructor 
+@RequestMapping ("/api")
+@CrossOrigin (origins = "http://localhost:5173")
+public class ApiController {
+
+    private final ApiService apiService;
+
+    @GetMapping("")
+    public List<ApiDto> findAll(){
+        return apiService.findAll();
+    }
+
+    @PostMapping("")
+    public boolean save( @RequestBody ApiDto apiDto ){
+        return apiService.save( apiDto );
+    }
+    
+    
+
+
+}
