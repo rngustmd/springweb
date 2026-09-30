@@ -1,12 +1,18 @@
-package example.day10;
+package example.day11;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
+import java.net.http.HttpHeaders;
+import java.time.Duration;
+
+import org.springframework.http.ResponseCookie;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class MemberController {
 
     private final MemberService memberService;   
+    private final JwtUtil jwtUtil;
 
     // [1] 회원가입
     @PostMapping ("/signup")
@@ -33,46 +40,65 @@ public class MemberController {
 
     }
 
-    // [2] 로그인 + 세션 (인증 성공 시 성공한 회원정보 저장/왜? 로그인 성공한 회원이 글쓰기/제품등록 등등 FK용도 )
+    // [2] 로그인 + 쿠키변경( 회원 식별(번호) 쿠키에 담아 클라이언트에 전송 )
     @PostMapping("/login")
-    public MemberDto login( @RequestBody MemberDto memberDto , HttpSession session ){
+    public MemberDto login( @RequestBody MemberDto memberDto , HttpServletResponse response ){
 
-        // 1. 서비스에게 인증 확인한다.
+        // 1. 서비스 에게 인증/로그인 확인 (기존 유지)
         MemberDto result = memberService.login(memberDto);
-        
-        // 로그인 실패
-        if ( result == null ) return null;
 
-        // 2. 인증 성공이면 세션에 인증한 회원정보 담아주기.
-        // - 매개변수에 HttpSession 객체 정의
-        // - 'login_member' key(이름) 으로 로그인 성공한 memberDto value( 로그인성공한 ) 정보 저장
-        session.setAttribute("login_member", result); // Object (자동) 업캐스팅 , dto -> obj
+        if( result == null ) return null; // 로그인 실패시 
+        // 2. 로그인 성공 시 쿠키 생성/발급 *********** 쿠키 값을 jwt 안전하게 변경 *************
+
+        // 4. 토큰(token) 발급 요청
+        String token = jwtUtil.createToken( result.getMno() ); // mno --> jwt 
+
+        ResponseCookie cookie = ResponseCookie.from( "login_member" , token )
+                                .path("/") // 쿠키 사용할 경로 , "/" 도메인내 전체
+                                .maxAge( Duration.ofDays(1) ) // 쿠키의 유효기간 , 1일  // Duration.ofXXX( 수 )
+                                .httpOnly(true) // JS이용한 탈취 방지 , XSS공격
+                                .secure(false) // HTPPS 에서만 사용 , 개발단계:FALSE , 배포단계:TRUE 
+                                .sameSite("Lax") // CSRF 공격방어
+                                .build(); // 쿠키생성 끝 
+
+        // 3. 응답 헤더에 쿠키 등록 , response.setHeader( )
+        response.setHeader( org.springframework.http.HttpHeaders.SET_COOKIE  , cookie.toString() );
         return result;
+        
     }
 
-    // [3] 내 정보 조회 + 세션 ( 이미 로그인된 회원이 내 정보 요청 )
+     // [3] 내정보조회 + 쿠키
     @GetMapping("/me")
-    public MemberDto getMyInfo( HttpSession session ){
-        // * 사용자에게 출가로 입력받을 값 없다. 
-        // 1) 세션에서 특정한(login_member) 정보 꺼내기
-        Object obj = session.getAttribute( "login_member" );
-        
-        // 세션 정보가 비어있으면 실패
-        if ( obj == null ) return null;
+    public MemberDto getMyInfo( 
 
-        // 2) 존재하면 Object 다운캐스팅 , obj -> dto
-        MemberDto memberDto = (MemberDto)obj;
+        // @CookieValue( value="쿠키명") ){ // 요청한 브라우저의 쿠키 가져오기 
+        @CookieValue (value="login_member" , required = false ) String token ){
 
-        // 3) 서비스에게 추가 정보 요청하여 반환한다. 
-        return memberService.getMyInfo( memberDto.getMno() );
+        //1. 만약에 token 가 없다면 비로그인
+        if( token == null ) return  null;
+
+        // ********* 쿠키에 저장된 token 이용하여 회원번호 찾기 ************
+        Long loginMno = jwtUtil.getMnoFromToken(token);
+
+        // 2. 로그인 중이면 서비스에게 회원정보 요청
+        return memberService.getMyInfo( loginMno );
 
     }
 
     // [4] 로그아웃 + 세션 ( 초기화 )
     @PostMapping("/logout")
-    public boolean logout ( HttpSession httpSession ){
-        httpSession.invalidate();
+    public boolean logout ( HttpServletResponse response ){
+
+        // 1. 삭제할 쿠키명과 동일한 이름으로 maxAge(0) 하여 재발급
+        ResponseCookie cookie = ResponseCookie.from("login_member" , "")
+                            .path("/")
+                            .maxAge(0)
+                            .httpOnly(true).secure(false)
+                            .build();
+        // 2. 응답객체 내 헤더에 쿠키 포함
+        response.setHeader(org.springframework.http.HttpHeaders.SET_COOKIE , cookie.toString() );
         return true;
+        
     }
     
      
