@@ -1,4 +1,4 @@
-package example.day13;
+package example.practicescr;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
